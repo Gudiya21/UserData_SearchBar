@@ -1,69 +1,101 @@
-import React,{ useState } from 'react';
+import React, { useState } from "react"
 import './App.css'
-function App(){
-  //if we want to update "task" when we need to call "setTask"
-  ///ex - setTask(abcd)
-const [task,setTask]=useState("")
-const [alltasks,setAllTasks]=useState([])
-  return (
-    <center>
-    <div id='container'>
 
+const _ =require('lodash')
 
-      {/* Taking Input --> onchange is called every time when the input box value changes */}
-      <input id='inputbox' type="text" placeholder='Enter Your Task' onChange={(element)=>{
-        setTask(element.target.value)
-      }}/>
+export default function App() {
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("")
+    const [email, setEmail] = useState("") 
+    const [password, setPassword] = useState("")
+    const [allData, setAllData] = useState([])
+    const [searchData,setsearchData] =useState("")
+    const [filteredData,setFilteredData]=useState([])
+    const searchFunction=()=>{
+        if(searchData.length >3){
+            let filterDataItems = _.filter(allData, {"firstName":searchData})
+            setFilteredData(filterDataItems)
+        }
+    }      
+    return (
+        
+        <div id="maindiv">
+            <center>
+            <h1>User Data & Search Bar</h1>
+            <input type="text" placeholder="First Name" onChange={(e) => {
+                setFirstName(e.target.value)
+            }} />
+            <input type="text" placeholder="Last Name" onChange={(e) => {
+                setLastName(e.target.value)
+            }} />
+            <input type="email" placeholder="Email" onChange={(e) => {
+                setEmail(e.target.value)
+            }} />
+            <input type="password" placeholder="Password" onChange={(e) => {
+                setPassword(e.target.value)
+            }} />
 
-    {/* onclik calls a function to add the todo into the all tasks array */}
-    <button id='add' onClick={()=>{
-      // if task length greater than zero 
-      if(task.length>0){
-      // spreading the all taska array and adding the task to the all tasks array
-      setAllTasks([...alltasks,task])
-      }
-    }}>Add ToDo</button>
-  {/* mapping the data */}
-    {
-      // item is the element of allTasks , index=0
-      alltasks.map((item,index)=>{
-    
-        return(
-          <div>
-            <h3>{item}</h3>
-            {/* delete button */}
-            <button id='delete' onClick={()=>{
-              // alltasks = [a,b,c,d]
-              //storeData = [...alltasks] =[a,b,c,d]
-              let storeData=[...alltasks]
-              //deletng the element by using index
-              storeData.splice(index,1); 
-              //storeData=[a,c,d]
-              setAllTasks(storeData)
-              //setAlltasks([a,c,d])
-            }}>Delete</button>
-             
-            {/* button for editing the particular todo */}
-            <button id='edit' onClick={()=>{
-              // newArr=[a,b,d]
-              let newArr=[...alltasks];
-              //prompt for taking input and storing it in editvalue--ex i will enter C
-              let editvalue = prompt("enter the edited todo")
-              //newArr[2]=c //previously it was d
-              
-              newArr[index]=editvalue
-              //newArr=[a,b,c]
-              //updating all tasks using set all tasks
-              setAllTasks(newArr)
+            <button onClick={() => {
 
-            }}>EDIT</button>
-          </div>
-        )
-      })
-    }
-    </div>
-    </center>
-  )
+                let tempObj = {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    password: password
+                }
+                setAllData([...allData,tempObj])
+            }}>Signup</button>
+            <div>
+                <input type="text" placeholder="Search..." onChange={(e)=>{
+                    setsearchData(e.target.value)
+                    searchFunction()
+                }}/>
+            </div>
+            </center>
+            {
+                searchData.length>3?filteredData.map((item,index)=>{
+                    return(
+                        <div>
+                            <center>
+                            <table>
+                                <th>Firstname</th>
+                                <th>Lastname</th>
+                                <th>Email</th>
+                                <th>Password</th>
+                                <tr>
+                            <td>{item.firstName}</td>
+                            <td>{item.lastName}</td>
+                            <td>{item.email}</td>
+                            <td>{item.password}</td>
+                            </tr> 
+                            </table>
+                            </center>
+                        </div>
+                    )
+                }) :allData.map((item,index)=>{
+                    return(
+                        <div>
+                            <center>
+                            <table>
+                            <th>Firstname</th>
+                                <th>Lastname</th>
+                                <th>Email</th>
+                                <th>Password</th>
+                                <tr>
+                            <td>{item.firstName}</td>
+                            <td>{item.lastName}</td>
+                            <td>{item.email}</td>
+                            <td>{item.password}</td>
+                            </tr>
+                            </table>
+                            </center>
+                        </div>
+                    )
+                })
+            
+        }
+        </div>
+        
+
+    ) 
 }
-
-export default App
